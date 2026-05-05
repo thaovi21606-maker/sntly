@@ -1,24 +1,38 @@
-@media screen and (max-width: 932px) and (orientation: portrait) {
-    body {
-        position: fixed;
-        width: 100vh;
-        height: 100vw;
-        top: 0;
-        left: 0; /* Đổi từ 100vw thành 0 */
-        transform: rotate(90deg) translateY(-100vw); /* Xoay và đẩy ngược lại để vào khung */
-        transform-origin: top left;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+/* ============================================================
+   ĐIỀU CHỈNH GIAO DIỆN CHO ĐIỆN THOẠI (RESPONSIVE & FORCE LANDSCAPE)
+   ============================================================ */
 
-    #frame {
-        width: 85vh !important; /* Dùng VH vì lúc này màn hình đã xoay */
-        height: auto !important;
-        max-height: 90vw !important;
-        margin: 0 auto;
-        position: relative;
+/* 1. Tự động xoay ngang và thu nhỏ khi cầm điện thoại dọc (Portrait) */
+@media screen and (orientation: portrait) {
+    #stage {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        width: 100vh !important;  /* Đảo chiều cao thành chiều ngang */
+        height: 100vw !important; /* Đảo chiều ngang thành chiều cao */
+        /* Đẩy về trung tâm, xoay ngang 90 độ và thu nhỏ (scale) để vừa màn hình */
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.5) !important; 
+        transform-origin: center center !important;
+    }
+}
+
+/* 2. Thu nhỏ vừa màn hình khi điện thoại cầm ngang sẵn (Landscape) */
+@media screen and (max-width: 950px) and (orientation: landscape) {
+    #stage {
+        transform: scale(0.6);
+        transform-origin: center center;
+    }
+}
+
+/* 3. Scale nhỏ hơn nữa cho các dòng điện thoại có màn hình cực bé */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    #stage {
+        transform: scale(0.5);
+    }
+}
+@media screen and (max-width: 450px) and (orientation: portrait) {
+    #stage {
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.45) !important; 
     }
 }
 body {
