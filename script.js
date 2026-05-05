@@ -81,10 +81,8 @@ window.onload = () => {
     };
 
     // --- 4. CẢNH MỞ ĐẦU ---
-    // Tìm đến hàm startRapping hoặc đoạn setup vị trí ban đầu
-const stopPoint = (window.innerWidth > window.innerHeight) 
-    ? (window.innerWidth / 2) - 150 
-    : (window.innerHeight / 2) - 150;
+    const stopPoint = (window.innerWidth / 2) - 175;
+    setTimeout(() => { if (characterContainer) characterContainer.style.left = stopPoint + "px"; }, 500);
 
     setTimeout(() => {
         if (characterImg) characterImg.classList.add('jumping');
@@ -100,42 +98,44 @@ const stopPoint = (window.innerWidth > window.innerHeight)
 
     // --- 5. LOGIC CLICK MỞ QUÀ ---
     if (clickableGift) {
-    clickableGift.addEventListener('click', () => {
-        // Kích hoạt cả 2 đoạn nhạc ngay lập tức (nhưng tắt tiếng hoặc pause ngay)
-        // Điều này giúp trình duyệt điện thoại cho phép phát nhạc về sau
-        if (audio) {
-            audio.play().then(() => { audio.pause(); audio.currentTime = 0; });
-        }
-        if (finalMusic) {
-            finalMusic.play().then(() => { finalMusic.pause(); finalMusic.currentTime = 0; });
-        }
-
-        // Các hiệu ứng cũ của bạn
-        if (ctaText) ctaText.style.display = 'none';
-        clickableGift.classList.add('gift-fly-shake');
-        createConfetti();
-
-        setTimeout(() => {
-            if (finalGift) finalGift.classList.add('show-final-gift');
+        clickableGift.addEventListener('click', () => {
             
-            document.querySelectorAll('.char-wrapper').forEach(wrapper => {
-                wrapper.classList.add('active-jumping');
-            });
+            // ---> ĐOẠN FIX CHO ĐIỆN THOẠI BẮT ĐẦU TỪ ĐÂY <---
+            // Mở khóa audio thứ 2 ngay khi người dùng click
+            if (finalMusic) {
+                finalMusic.play().catch(e => console.log("Unlock audio"));
+                finalMusic.pause();
+                finalMusic.currentTime = 0;
+            }
+            // ---> KẾT THÚC ĐOẠN FIX <---
 
-            document.querySelectorAll('.speech-bubble:not(.final-bubble)').forEach(bubble => {
-                bubble.style.display = 'block';
-            });
-            
+            if (ctaText) ctaText.style.display = 'none';
+            clickableGift.classList.add('gift-fly-shake');
+            createConfetti();
+
             setTimeout(() => {
-                if (singerContainer) singerContainer.classList.add('singer-arrive');
-                if (frame) frame.classList.add('shifted');
-                if (audio) {
-                    audio.play().then(() => { startRapping(); }).catch(e => console.log("Lỗi âm thanh"));
-                }
-            }, 3000); 
-        }, 700);
-    });
-}
+                if (finalGift) finalGift.classList.add('show-final-gift');
+                
+                document.querySelectorAll('.char-wrapper').forEach(wrapper => {
+                    wrapper.classList.add('active-jumping');
+                    const img = wrapper.querySelector('.side-character');
+                    if(img) img.classList.remove('active-jumping');
+                });
+
+                document.querySelectorAll('.speech-bubble:not(.final-bubble)').forEach(bubble => {
+                    bubble.style.display = 'block';
+                });
+                
+                setTimeout(() => {
+                    if (singerContainer) singerContainer.classList.add('singer-arrive');
+                    if (frame) frame.classList.add('shifted');
+                    if (audio) {
+                        audio.play().then(() => { startRapping(); }).catch(e => console.log("Cần tương tác"));
+                    }
+                }, 3000); 
+            }, 700);
+        });
+    }
 
     // --- 6. HÀM KÍCH HOẠT CẢNH KẾT THÚC ---
     function triggerFinalScene() {
@@ -172,7 +172,7 @@ const stopPoint = (window.innerWidth > window.innerHeight)
                         }
                     }, 2000); // 2s delay nhạc
 
-                    // Lần chờ 3: Hiện các ô thoại Yeah[cite: 2]
+                    // Lần chờ 3: Hiện các ô thoại Yeah
                     setTimeout(() => {
                         document.querySelectorAll('.yeah-bubble').forEach(bubble => {
                             bubble.style.display = 'block';
