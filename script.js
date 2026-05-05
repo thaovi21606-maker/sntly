@@ -139,7 +139,7 @@ const stopPoint = (window.innerWidth / 2) - 200; // Tăng khoảng cách để n
     }
 
     // --- 6. HÀM KÍCH HOẠT CẢNH KẾT THÚC ---
-    function triggerFinalScene() {
+   function triggerFinalScene() {
         if (finalSceneTriggered) return; 
         finalSceneTriggered = true;
 
@@ -147,16 +147,22 @@ const stopPoint = (window.innerWidth / 2) - 200; // Tăng khoảng cách để n
         const friend1 = document.getElementById('friend-1');
         const friend2 = document.getElementById('friend-2');
         
+        // Di chuyển nhân vật ra ngoài stage để không bị giới hạn bởi khung gỗ
         if (stage && friend1) stage.appendChild(friend1);
         if (stage && friend2) stage.appendChild(friend2);
 
         document.body.classList.add('final-scene-active');
 
+        // Đảm bảo xóa bỏ các thuộc tính style cũ do JS gán để CSS thực thi giãn cách
         if (characterContainer) {
+            characterContainer.style.left = "auto";
             characterContainer.classList.remove('fly-away');
             characterContainer.classList.add('active-jumping');
         }
-        if (singerContainer) singerContainer.classList.add('active-jumping');
+        if (singerContainer) {
+            singerContainer.style.right = "auto";
+            singerContainer.classList.add('active-jumping');
+        }
 
         setTimeout(() => {
             if (bdayContainer) {
