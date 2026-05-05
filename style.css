@@ -1,0 +1,626 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #fce4ec;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+#stage { position: relative; width: 100vw; height: 100vh; }
+
+/* --- SPARKLE OVERLAY (HIỆU ỨNG LẤP LÁNH NỀN) --- */
+.sparkle-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(circle, #fff 10%, transparent 20%), 
+                      radial-gradient(circle, #fff 10%, transparent 20%);
+    background-size: 50px 50px, 60px 60px;
+    background-position: 0 0, 30px 30px;
+    opacity: 0; z-index: 2; /* Dưới khung tranh, trên nền body */
+    transition: opacity 1s ease-in-out;
+}
+.open .sparkle-overlay { opacity: 0.3; } /* Hiện lên khi rèm mở */
+
+/* --- CONFETTI (HẠT LẤP LÁNH RƠI) --- */
+#confetti-container {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 35; /* Trên content khung tranh, dưới nhân vật phụ */
+}
+.confetti {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    opacity: 0;
+    animation: confetti-fall 3s linear forwards;
+}
+@keyframes confetti-fall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+}
+
+/* --- KHUNG TRANH --- */
+#frame {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 850px; height: 500px;
+    border: 12px solid #8d6e63;
+    background-color: #fff9c4;
+    z-index: 5;
+    overflow: visible;
+}
+
+.content-inside {
+    display: flex;
+    justify-content: space-between; /* Đẩy các phần tử ra sát hai bên */
+    align-items: flex-end;
+    padding: 0 40px 30px 40px; /* Thêm padding trái/phải để nhân vật không dính chặt vào viền gỗ */
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.char-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+/* --- Ô THOẠI --- */
+/* --- Ô THOẠI KIỂU MỚI --- */
+.speech-bubble {
+    display: none;
+    position: absolute;
+    top: -100px; /* Nhích lên cao hơn một chút để không che nhân vật */
+    background: #ffffff;
+    padding: 15px 25px;
+    border-radius: 50px; /* Làm ô thoại hình elip mềm mại */
+    border: 3px solid #44071b; /* Đổi màu viền sang hồng nhạt cho dễ thương */
+    font-weight: bold;
+    color: #d81b60; /* Màu chữ hồng đậm */
+    white-space: nowrap;
+    z-index: 30;
+    /* Thêm đổ bóng mềm để tạo chiều sâu */
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* Phần đuôi nhọn của ô thoại */
+.speech-bubble::after {
+    content: ''; 
+    position: absolute; 
+    bottom: -12px; 
+    left: 50%;
+    transform: translateX(-50%);
+    /* Tạo đuôi nhọn bằng tam giác */
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid #44071b; /* Màu trùng với viền ô thoại */
+}
+
+/* Thêm một lớp nền trắng nhỏ đè lên để đuôi nhọn trông liền mạch hơn */
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #ffffff;
+    z-index: 31;
+}
+
+/* --- NHÂN VẬT PHỤ --- */
+.side-character {
+    width: 280px; height: auto;
+    animation: sway 3s ease-in-out infinite;
+    transform-origin: bottom center;
+    flex-shrink: 0;
+}
+
+@keyframes sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+.active-jumping { animation: sideJump 0.5s ease-in-out infinite !important; }
+
+@keyframes sideJump {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-40px); }
+}
+
+/* --- RÈM & DÂY GIẬT --- */
+.curtain {
+    position: absolute; top: 0; width: 50.5%; height: 100%;
+    background-color: #d32f2f; z-index: 50;
+    transition: transform 1.5s ease-in-out;
+}
+#curtain-left { left: 0; transform-origin: left; border-right: 2px solid #b71c1c; }
+#curtain-right { right: 0; transform-origin: right; border-left: 2px solid #b71c1c; }
+
+.open #curtain-left { transform: scaleX(0); }
+.open #curtain-right { transform: scaleX(0); }
+
+#pull-string {
+    position: absolute; 
+    top: 0;
+    left: 50%;
+    width: 6px; 
+    height: 80px; 
+    background: #fbc02d; 
+    z-index: 55;
+    transition: height 0.3s ease;
+    border-radius: 0 0 5px 5px;
+}
+
+/* --- KHU VỰC QUÀ --- */
+.gift-area { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+.call-to-action {
+    font-weight: bold; color: #d81b60; margin-bottom: 10px;
+    animation: bounce 1s infinite;
+}
+#cta-text {
+    font-size: 25px;
+    font-weight: bold;
+    color: #d81b60;
+    cursor: pointer;
+    /* Thêm hiệu ứng hoạt hình pulse */
+    animation: pulseText 1.5s infinite;
+}
+
+@keyframes pulseText {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 0px rgba(216, 27, 96, 0);
+    }
+    50% {
+        transform: scale(1.1); /* Phóng to 10% */
+        text-shadow: 0 0 10px rgba(216, 27, 96, 0.3);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 0px rgba(216, 27, 96, 0);
+    }
+}
+
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+#clickable-gift { width: 150px; cursor: pointer; z-index: 20; }
+#final-gift { display: none; width: 220px; position: absolute; bottom: 80px; z-index: 40; }
+/* Hiệu ứng nổ và tan biến của hộp quà cũ */
+.gift-fly-shake { animation: gift-explode-and-dissolve 1.5s forwards !important; }
+
+@keyframes gift-explode-and-dissolve {
+    0% { transform: translateY(0) scale(1) rotate(0); opacity: 1; filter: none; }
+    20% { transform: translateY(0) scale(1.1) rotate(5deg); opacity: 1; filter: none; }
+    40% { transform: translateY(0) scale(1) rotate(-5deg); opacity: 1; filter: none; }
+    60% { transform: translateY(0) scale(1.1) rotate(5deg); opacity: 1; filter: blur(2px); }
+    80% { transform: translateY(0) scale(1) rotate(-5deg); opacity: 0.5; filter: blur(4px); }
+    100% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; filter: blur(10px); }
+}
+
+/* Hiệu ứng hào quang phát sáng sau món quà cuối cùng */
+.final-gift-glow {
+    position: absolute; bottom: 0; left: 50%; width: 0; height: 0;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,255,100,0.8) 0%, rgba(255,255,255,0) 70%);
+    z-index: 39; /* Dưới món quà, trên base khung tranh */
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+.show-final-gift + .final-gift-glow {
+    width: 300px; height: 300px; opacity: 1;
+}
+
+/* Hiệu ứng xuất hiện và nhấp nháy liên tục của món quà thật */
+.show-final-gift { 
+    display: block !important; 
+    animation: giftAppearV2 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards, pulse-glow 2s infinite ease-in-out 1s;
+}
+
+@keyframes giftAppearV2 { 
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.4) rotate(15deg); opacity: 1; }
+    75% { transform: scale(0.9) rotate(-10deg); opacity: 1; }
+    100% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); }
+    50% { filter: drop-shadow(0 0 20px rgba(255,255,255,1)); }
+}
+
+/* Hiệu ứng xuất hiện và lắc nhẹ lấp lánh liên tục của món quà thật */
+.show-final-gift { 
+    display: block !important; 
+    /* Đổi từ pulse-glow sang sparkle-shake, giảm thời gian chu kỳ xuống 1.5s để nhìn vui mắt hơn */
+    animation: giftAppearV2 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards, sparkle-shake 1.5s infinite ease-in-out 1s;
+}
+
+@keyframes giftAppearV2 { 
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.4) rotate(15deg); opacity: 1; }
+    75% { transform: scale(0.9) rotate(-10deg); opacity: 1; }
+    100% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+}
+
+/* Animation mới kết hợp lắc và lấp lánh */
+@keyframes sparkle-shake {
+    0%, 100% { 
+        filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); 
+        transform: scale(1.2) rotate(0deg); 
+    }
+    25% {
+        filter: drop-shadow(0 0 20px rgba(255,255,150,0.9)); 
+        transform: scale(1.2) rotate(-3deg); /* Lắc nhẹ sang trái */
+    }
+    50% { 
+        filter: drop-shadow(0 0 35px rgba(255,255,255,1)); /* Lấp lánh sáng nhất */
+        transform: scale(1.2) rotate(3deg); /* Lắc nhẹ sang phải */
+    }
+    75% {
+        filter: drop-shadow(0 0 20px rgba(255,255,150,0.9)); 
+        transform: scale(1.2) rotate(-3deg); /* Lắc nhẹ sang trái */
+    }
+}
+
+/* --- NHÂN VẬT CHÍNH --- */
+#character-container { 
+    position: absolute; 
+    bottom: 15%; 
+    left: -450px; 
+    z-index: 60;
+    transition: left 3s linear; 
+}
+#character { width: 350px; height: auto; }
+
+.jumping { animation: jumpPull 0.6s ease; }
+@keyframes jumpPull { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-100px); } }
+
+.fly-away { 
+    transition: bottom 1.5s ease-in, left 1.5s ease-in, opacity 1s !important;
+    bottom: 120% !important; left: 110% !important; opacity: 0;
+}
+
+/* --- NHÂN VẬT CA SĨ --- */
+#singer-container {
+    position: absolute;
+    top: 50%;
+    right: -400px; /* Nằm ngoài lề phải màn hình */
+    transform: translateY(-50%);
+    z-index: 100;
+    transition: right 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hiệu ứng bay vào có độ nảy */
+}
+
+#singer {
+    width: 300px; /* Bạn có thể chỉnh lại kích thước cho phù hợp */
+    height: auto;
+}
+
+/* Khi kích hoạt: Nhân vật bay vào */
+.singer-arrive {
+    right: 5% !important; /* Dừng lại cách lề phải 5% */
+}
+
+/* Khi kích hoạt: Đẩy khung hình sang trái */
+#frame.shifted {
+    left: 40%; /* Thay vì 50% (giữa màn hình), ta cho nó lệch sang trái */
+    transition: left 1s ease-in-out;
+}
+
+/* Animation cho ca sĩ nhún nhảy khi hát */
+.singer-dancing {
+    animation: singer-jump 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes singer-jump {
+    from { transform: translateY(0); }
+    to { transform: translateY(-30px); }
+}
+/* --- NHÂN VẬT CA SĨ --- */
+#singer-container {
+    position: absolute;
+    top: 50%;
+    right: -400px; /* Nằm khuất bên ngoài lề phải màn hình */
+    transform: translateY(-50%);
+    z-index: 100;
+    transition: right 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hiệu ứng bay vào mượt mà */
+}
+
+#singer {
+    width: 300px; /* Điều chỉnh kích thước theo ý muốn */
+    height: auto;
+}
+
+/* Khi nhân vật bay vào màn hình */
+.singer-arrive {
+    right: 5% !important; /* Dừng lại cách lề phải một khoảng */
+}
+
+/* Hiệu ứng đẩy khung ảnh sang trái */
+#frame.shifted {
+    left: 40%; /* Dịch khung hình sang trái (giá trị mặc định là 50% nên 40% sẽ lệch sang trái) */
+    transition: left 1s ease-in-out;
+}
+/* --- MICROPHONE --- */
+#microphone {
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    font-size: 50px;
+    filter: drop-shadow(0 0 10px gold);
+    animation: mic-shake 0.5s infinite;
+}
+
+@keyframes mic-shake {
+    0%, 100% { transform: translateY(-50%) rotate(0); }
+    50% { transform: translateY(-60%) rotate(10deg); }
+}
+
+/* --- Ô THOẠI RAP --- */
+/* Sửa ô thoại Rap để không bị cắt chữ */
+/* --- Ô THOẠI RAP KIỂU MỚI (TRÊN ĐẦU NHÂN VẬT) --- */
+#rap-bubble {
+    position: absolute;
+    bottom: 110%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 120px; /* Tăng nhẹ chiều cao để không gian rộng rãi hơn */
+    background: white;
+    border: 3px solid #333;
+    border-radius: 20px;
+    /* Tăng padding-top từ 10px lên 30px để chữ cách viền trên[cite: 5] */
+    padding: 30px 15px 10px 15px; 
+    overflow: hidden;
+    display: none; 
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+    z-index: 110;
+}
+
+/* Thêm đuôi nhọn chỉ xuống nhân vật */
+#rap-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid white;
+}
+
+#rap-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -19px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 17px solid transparent;
+    border-right: 17px solid transparent;
+    border-top: 17px solid #333;
+}
+
+/* Sửa các dòng rap để hiển thị rõ ràng */
+/* --- Ô THOẠI RAP --- */
+#rap-bubble {
+    position: absolute;
+    bottom: 110%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 100px; /* Giữ kích thước cũ hoặc xê xích chút để đủ hiện ~3 dòng */
+    background: white;
+    border: 3px solid #333;
+    border-radius: 15px;
+    padding: 10px 15px;
+    overflow: hidden; /* Quan trọng để tạo hiệu ứng cuộn nội bộ */
+    display: none; 
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+    z-index: 110;
+}
+
+/* Container chứa toàn bộ lời rap để di chuyển lên trên */
+#rap-inner {
+    transition: transform 0.5s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.rap-line {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 15px;
+    color: black; /* Mặc định màu đen cho câu chưa đến lượt/qua lượt */
+    margin-bottom: 8px;
+    line-height: 1.2;
+    transition: all 0.3s ease;
+    transform: scale(0.9);
+    opacity: 0.6; /* Làm mờ nhẹ những câu không phải trọng tâm */
+    text-align: center;
+}
+
+/* Hiệu ứng nổi bật cho câu đến lượt */
+.rap-line.active {
+    color: #ff4081; /* Màu hồng nổi bật[cite: 5] */
+    transform: scale(1.15); /* Hiệu ứng phóng to nổi lên[cite: 5] */
+    opacity: 1;
+    text-shadow: 0 0 5px rgba(255, 64, 129, 0.2);
+}
+
+/* Đảm bảo khung hình dịch chuyển mượt mà */
+#frame {
+    transition: all 1s ease-in-out; /* Thêm dòng này nếu chưa có */
+}
+/* ============================================================
+   CẢNH KẾT THÚC TỔNG HỢP (SAU KHI NHẠC DỨT)
+   ============================================================ */
+
+/* 1. XÓA KHUNG GỖ VÀ LÀM SẠCH SÂN KHẤU[cite: 8, 10] */
+.final-scene-active #frame {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    border: none !important;
+    background: none !important;
+    transition: opacity 1s ease;
+}
+
+/* Ẩn triệt để: Quà, Mic, Thoại Rap, và các ô thoại cũ */
+.final-scene-active #clickable-gift, 
+.final-scene-active #final-gift,
+.final-scene-active #microphone,
+.final-scene-active #rap-bubble,
+.final-scene-active #cta-text,
+.final-scene-active .speech-bubble:not(.final-bubble) { 
+    display: none !important; 
+}
+
+/* Đảm bảo nội dung bên trong khung vẫn hiển thị trên nền hồng */
+/* 2. ĐỊNH VỊ ĐỘI HÌNH 5 NGƯỜI (NỀN HỒNG) */
+
+/* Nhóm bên trái: 2 Bạn thân (Dùng first-of-type để không bị nhầm với thẻ pháo giấy) */
+.final-scene-active .content-inside .char-wrapper:first-of-type { 
+    position: absolute; left: 15%; bottom: 15%; z-index: 5; 
+} 
+.final-scene-active .content-inside .char-wrapper:last-of-type { 
+    position: absolute; left: 28%; bottom: 10%; z-index: 4; 
+}
+
+/* Nhóm bên phải: Ca sĩ và NV Kéo rèm (Cân chỉnh bottom đối xứng với bên trái) */
+.final-scene-active #singer-container { 
+    top: auto !important; left: auto !important; 
+    right: 28% !important; bottom: 10% !important; 
+}
+.final-scene-active #character-container { 
+    left: auto !important; right: 15% !important; 
+    bottom: 15% !important; opacity: 1 !important; 
+    transition: all 1s;
+}
+
+/* Nhân vật chính ở chính giữa */
+#birthday-person-container {
+    position: absolute;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    /* Xóa transition ở đây để nhường chỗ cho hiệu ứng animation chạy */
+}
+
+/* Hiệu ứng chạy lên trước (lắc lư nảy nhẹ như đang chạy) */
+.run-up { 
+    animation: runningUp 1.5s forwards ease-out;
+}
+
+@keyframes runningUp {
+    0% { bottom: -50%; transform: translateX(-50%) translateY(0) rotate(0deg); }
+    20% { bottom: -30%; transform: translateX(-50%) translateY(-15px) rotate(-8deg); }
+    40% { bottom: -10%; transform: translateX(-50%) translateY(0) rotate(8deg); }
+    60% { bottom: 5%; transform: translateX(-50%) translateY(-15px) rotate(-8deg); }
+    80% { bottom: 15%; transform: translateX(-50%) translateY(0) rotate(8deg); }
+    100% { bottom: 20%; transform: translateX(-50%) translateY(0) rotate(0deg); }
+}
+
+/* 3. THIẾT LẬP CÁC Ô THOẠI CẢNH CUỐI */
+
+/* Mặc định ẩn tất cả thoại cảnh cuối để JS điều khiển */
+.final-bubble { 
+    display: none; 
+} 
+
+/* Thoại Cảm ơn của NV chính (Hiện sau khi chạy lên xong) */
+#birthday-bubble {
+    background: white;
+    border: 3px solid #ff69b4;
+    padding: 12px 25px;
+    border-radius: 40px;
+    color: #d81b60;
+    font-weight: bold;
+    white-space: nowrap;
+    position: absolute;
+    top: -90px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+#birthday-bubble::after {
+    content: ''; position: absolute; bottom: -12px; left: 50%;
+    transform: translateX(-50%);
+    border-top: 12px solid #ff69b4;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+}
+
+/* Thoại Yeah của 4 nhân vật phụ */
+
+/* Thoại Yeah của các nhân vật phụ */
+.yeah-bubble {
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffeb3b;
+    border: 2px solid #000;
+    padding: 6px 15px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #000;
+    white-space: nowrap;
+    z-index: 110;
+    display: none; /* Mặc định ẩn, JS sẽ hiện lên */
+}
+
+/* Hiệu ứng nhảy cho ô thoại khi nhân vật đang nhảy */
+.active-jumping .yeah-bubble {
+    animation: bubbleJump 0.5s ease-in-out infinite !important;
+}
+
+@keyframes bubbleJump {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-20px); } /* Nhảy thấp hơn nhân vật một chút để tạo độ mượt */
+}
+/* 2. ĐỊNH VỊ ĐỘI HÌNH 5 NGƯỜI (NỀN HỒNG) */
+
+/* Nhóm bên trái: 2 Bạn thân (Gọi trực tiếp ID vì JS đã chuyển ra ngoài #stage) */
+/* --- ĐỊNH VỊ LẠI ĐỘI HÌNH 5 NGƯỜI (Nới rộng khoảng cách) --- */
+
+/* Cụm bên trái - Đẩy sát về lề trái hơn */
+.final-scene-active #friend-1 { 
+    position: absolute; 
+    left: 8%; /* Giảm từ 15% xuống 8% */
+    bottom: 15%; 
+    z-index: 5; 
+} 
+.final-scene-active #friend-2 { 
+    position: absolute; 
+    left: 22%; /* Giảm từ 28% xuống 22% */
+    bottom: 10%; 
+    z-index: 4; 
+}
+
+/* Cụm bên phải - Đẩy sát về lề phải hơn */
+.final-scene-active #character-container { 
+    left: auto !important; 
+    right: 8% !important; /* Đối xứng với friend-1 */
+    bottom: 15% !important; 
+    opacity: 1 !important; 
+}
+.final-scene-active #singer-container { 
+    top: auto !important; 
+    left: auto !important; 
+    right: 22% !important; /* Đối xứng với friend-2 */
+    bottom: 10% !important; 
+}
+
+/* Đảm bảo hiệu ứng nhảy áp dụng cho cả Container bên phải */
+#character-container.active-jumping, 
+#singer-container.active-jumping {
+    animation: sideJump 0.5s ease-in-out infinite !important;
+}
+/* Hiệu ứng nhảy cho nhân vật chính */
+.active-jumping-main {
+    animation: main-jump 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes main-jump {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); } /* Nhảy lên 20px */
+}
