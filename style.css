@@ -1,35 +1,24 @@
-/* Hiệu ứng xoay ngang toàn bộ trang web trên điện thoại */
 @media screen and (max-width: 932px) and (orientation: portrait) {
     body {
         position: fixed;
         width: 100vh;
         height: 100vw;
         top: 0;
-        left: 100vw;
-        transform: rotate(90deg);
+        left: 0; /* Đổi từ 100vw thành 0 */
+        transform: rotate(90deg) translateY(-100vw); /* Xoay và đẩy ngược lại để vào khung */
         transform-origin: top left;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    /* Điều chỉnh khung chứa chính để fit với chiều cao mới (sau khi xoay) */
     #frame {
-        width: 90vh !important; 
+        width: 85vh !important; /* Dùng VH vì lúc này màn hình đã xoay */
         height: auto !important;
-        max-height: 80vw !important;
-        margin: auto;
-    }
-
-    /* Thu nhỏ các nhân vật một chút để không bị tràn */
-    .side-character, #character, .character-wrapper {
-        width: 120px !important;
-    }
-}
-
-/* Khi người dùng đã tự xoay ngang điện thoại (Landscape) */
-@media screen and (orientation: landscape) {
-    #frame {
-        width: 80vw !important;
-        height: auto !important;
+        max-height: 90vw !important;
+        margin: 0 auto;
+        position: relative;
     }
 }
 body {
