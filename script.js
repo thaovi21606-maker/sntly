@@ -81,7 +81,9 @@ window.onload = () => {
     };
 
     // --- 4. CẢNH MỞ ĐẦU ---
-    const stopPoint = (window.innerWidth / 2) - 175;
+    // Thay vì: const stopPoint = (window.innerWidth / 2) - 175;
+// Hãy dùng:
+const stopPoint = (window.innerWidth / 2) - (characterContainer.offsetWidth / 2);
     setTimeout(() => { if (characterContainer) characterContainer.style.left = stopPoint + "px"; }, 500);
 
     setTimeout(() => {
