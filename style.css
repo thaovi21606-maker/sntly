@@ -2,39 +2,46 @@
    ĐIỀU CHỈNH GIAO DIỆN CHO ĐIỆN THOẠI (RESPONSIVE & FORCE LANDSCAPE)
    ============================================================ */
 
-/* 1. Tự động xoay ngang và thu nhỏ khi cầm điện thoại dọc (Portrait) */
+/* ============================================================
+   ĐIỀU CHỈNH GIAO DIỆN TO HƠN & FIX LỖI CA SĨ TRÊN ĐIỆN THOẠI
+   ============================================================ */
+
 @media screen and (orientation: portrait) {
     #stage {
         position: absolute !important;
         top: 50% !important;
         left: 50% !important;
-        width: 100vh !important;  /* Đảo chiều cao thành chiều ngang */
-        height: 100vw !important; /* Đảo chiều ngang thành chiều cao */
-        /* Đẩy về trung tâm, xoay ngang 90 độ và thu nhỏ (scale) để vừa màn hình */
-        transform: translate(-50%, -50%) rotate(90deg) scale(0.5) !important; 
+        width: 100vh !important; 
+        height: 100vw !important; 
+        /* Tăng scale từ 0.5 lên 0.65 để mọi thứ to rõ hơn */
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.65) !important; 
         transform-origin: center center !important;
     }
+
+    /* Fix lỗi ca sĩ bị lệch lề trên điện thoại */
+    .singer-arrive {
+        right: 2% !important; /* Đẩy ca sĩ sát vào lề phải hơn một chút */
+    }
+
+    /* Thu nhỏ ô thoại Rap một chút để không che hết nhân vật trên màn hình dọc */
+    #rap-bubble {
+        width: 220px !important;
+        height: 90px !important;
+        bottom: 105% !important;
+    }
 }
 
-/* 2. Thu nhỏ vừa màn hình khi điện thoại cầm ngang sẵn (Landscape) */
-@media screen and (max-width: 950px) and (orientation: landscape) {
-    #stage {
-        transform: scale(0.6);
-        transform-origin: center center;
-    }
+/* Tăng kích thước khung hình gốc để chiếm không gian tốt hơn */
+#frame {
+    width: 900px; /* Tăng từ 850px */
+    height: 550px; /* Tăng từ 500px */
 }
 
-/* 3. Scale nhỏ hơn nữa cho các dòng điện thoại có màn hình cực bé */
-@media screen and (max-width: 768px) and (orientation: landscape) {
-    #stage {
-        transform: scale(0.5);
-    }
-}
-@media screen and (max-width: 450px) and (orientation: portrait) {
-    #stage {
-        transform: translate(-50%, -50%) rotate(90deg) scale(0.45) !important; 
-    }
-}
+/* Phóng to món quà và các nhân vật phụ */
+#clickable-gift { width: 180px; } /* To hơn để dễ bấm */
+#final-gift { width: 260px; }
+.side-character { width: 320px; } /* Phóng to nhân vật bạn thân */
+#singer { width: 350px; } /* Phóng to ca sĩ */
 body {
     margin: 0;
     padding: 0;
