@@ -81,10 +81,10 @@ window.onload = () => {
     };
 
     // --- 4. CẢNH MỞ ĐẦU ---
-    // Thay vì: const stopPoint = (window.innerWidth / 2) - 175;
-// Hãy dùng:
-const stopPoint = (window.innerWidth / 2) - (characterContainer.offsetWidth / 2);
-    setTimeout(() => { if (characterContainer) characterContainer.style.left = stopPoint + "px"; }, 500);
+    // Tìm đến hàm startRapping hoặc đoạn setup vị trí ban đầu
+const stopPoint = (window.innerWidth > window.innerHeight) 
+    ? (window.innerWidth / 2) - 150 
+    : (window.innerHeight / 2) - 150;
 
     setTimeout(() => {
         if (characterImg) characterImg.classList.add('jumping');
