@@ -81,7 +81,8 @@ window.onload = () => {
     };
 
     // --- 4. CẢNH MỞ ĐẦU ---
-    const stopPoint = (window.innerWidth / 2) - 175;
+    // Tìm dòng này ở phần 4 (Cảnh mở đầu) và sửa lại con số:
+const stopPoint = (window.innerWidth / 2) - 200; // Tăng khoảng cách để nhân vật kéo rèm đứng cân đối hơn
     setTimeout(() => { if (characterContainer) characterContainer.style.left = stopPoint + "px"; }, 500);
 
     setTimeout(() => {
