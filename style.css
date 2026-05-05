@@ -1,3 +1,34 @@
+/* Chỉ áp dụng khi màn hình nhỏ hơn 768px (Điện thoại) */
+@media (max-width: 768px) {
+    /* Thu nhỏ khung chứa chính */
+    #frame {
+        width: 95vw !important; /* Chiếm 95% chiều ngang điện thoại */
+        height: auto;
+        aspect-ratio: 1/1; /* Giữ khung hình vuông hoặc tỉ lệ bạn muốn */
+    }
+
+    /* Thu nhỏ các nhân vật */
+    .side-character, #character, .character-wrapper {
+        width: 80px !important; /* Giảm kích thước nhân vật xuống */
+        height: auto !important;
+    }
+
+    /* Thu nhỏ ô thoại để không đè lên mặt nhân vật */
+    .speech-bubble, #rap-bubble, #birthday-bubble {
+        width: 150px !important; 
+        font-size: 12px !important;
+        padding: 5px !important;
+    }
+
+    /* Điều chỉnh lại vị trí các nhân vật bên cạnh để không bị dính chùm */
+    #friend-1 { left: 10% !important; }
+    #friend-2 { right: 10% !important; }
+    
+    /* Thu nhỏ chữ Lyric rap */
+    .rap-line {
+        font-size: 10px !important;
+    }
+}
 body {
     margin: 0;
     padding: 0;
