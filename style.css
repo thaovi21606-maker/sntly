@@ -13,9 +13,10 @@
         left: 50% !important;
         width: 100vh !important; 
         height: 100vw !important; 
-        /* Tăng scale từ 0.5 lên 0.65 để mọi thứ to rõ hơn */
-        transform: translate(-50%, -50%) rotate(90deg) scale(0.65) !important; 
+        /* Scale 0.75 để cực to nhưng vẫn đủ chỗ cho ô thoại */
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.75) !important; 
         transform-origin: center center !important;
+        overflow: visible !important; /* Đảm bảo ô thoại không bị cắt */
     }
 
     /* Fix lỗi ca sĩ bị lệch lề trên điện thoại */
@@ -341,9 +342,8 @@ body {
 
 /* Khi kích hoạt: Nhân vật bay vào */
 .singer-arrive {
-    right: 5% !important; /* Dừng lại cách lề phải 5% */
-}
-
+        right: 0% !important; 
+    }
 /* Khi kích hoạt: Đẩy khung hình sang trái */
 #frame.shifted {
     left: 40%; /* Thay vì 50% (giữa màn hình), ta cho nó lệch sang trái */
@@ -580,11 +580,16 @@ body {
     font-weight: bold;
     white-space: nowrap;
     position: absolute;
-    top: -90px;
+    top: -110px;
     left: 50%;
     transform: translateX(-50%);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+   width: max-content;
+    max-width: 400px; /* Giới hạn độ rộng để không tràn lề */
+    white-space: normal !important; /* Cho phép xuống dòng nếu chữ quá dài */
+    line-height: 1.4;
 }
+
 #birthday-bubble::after {
     content: ''; position: absolute; bottom: -12px; left: 50%;
     transform: translateX(-50%);
@@ -628,30 +633,26 @@ body {
 
 /* Cụm bên trái - Đẩy sát về lề trái hơn */
 .final-scene-active #friend-1 { 
-    position: absolute; 
-    left: 8%; /* Giảm từ 15% xuống 8% */
-    bottom: 15%; 
-    z-index: 5; 
+    left: 2% !important; /* Đẩy sát lề trái nhất */
+    bottom: 12% !important; 
 } 
 .final-scene-active #friend-2 { 
-    position: absolute; 
-    left: 22%; /* Giảm từ 28% xuống 22% */
-    bottom: 10%; 
-    z-index: 4; 
+    left: 22% !important; /* Giãn ra */
+    bottom: 8% !important; 
 }
-
-/* Cụm bên phải - Đẩy sát về lề phải hơn */
-.final-scene-active #character-container { 
-    left: auto !important; 
-    right: 8% !important; /* Đối xứng với friend-1 */
-    bottom: 15% !important; 
-    opacity: 1 !important; 
+.final-scene-active #birthday-person-container {
+    left: 50% !important; /* Nhân vật chính ở giữa */
+    bottom: 15% !important;
 }
 .final-scene-active #singer-container { 
-    top: auto !important; 
-    left: auto !important; 
-    right: 22% !important; /* Đối xứng với friend-2 */
-    bottom: 10% !important; 
+    right: 22% !important; /* Giãn ra đối xứng friend-2 */
+    bottom: 8% !important; 
+    left: auto !important;
+}
+.final-scene-active #character-container { 
+    right: 2% !important; /* Đẩy sát lề phải nhất */
+    bottom: 12% !important; 
+    left: auto !important;
 }
 
 /* Đảm bảo hiệu ứng nhảy áp dụng cho cả Container bên phải */
