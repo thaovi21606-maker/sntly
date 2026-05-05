@@ -13,16 +13,24 @@
         left: 50% !important;
         width: 100vh !important; 
         height: 100vw !important; 
-        /* Scale 0.75 để cực to nhưng vẫn đủ chỗ cho ô thoại */
-        transform: translate(-50%, -50%) rotate(90deg) scale(0.75) !important; 
+        /* Scale 0.7 giúp khung hình to rõ mà không bị tràn ô thoại */
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.7) !important; 
         transform-origin: center center !important;
-        overflow: visible !important; /* Đảm bảo ô thoại không bị cắt */
+        overflow: visible !important;
     }
+
+    /* Cưỡng ép toàn bộ nhân vật và ca sĩ xoay theo trục của Stage */
+    #singer-container, #character-container, .char-wrapper {
+        transform: rotate(0deg) !important; 
+    }
+}
 
     /* Fix lỗi ca sĩ bị lệch lề trên điện thoại */
     .singer-arrive {
-        right: 2% !important; /* Đẩy ca sĩ sát vào lề phải hơn một chút */
-    }
+    right: 5% !important; 
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
 
     /* Thu nhỏ ô thoại Rap một chút để không che hết nhân vật trên màn hình dọc */
     #rap-bubble {
@@ -34,8 +42,13 @@
 
 /* Tăng kích thước khung hình gốc để chiếm không gian tốt hơn */
 #frame {
-    width: 900px; /* Tăng từ 850px */
-    height: 550px; /* Tăng từ 500px */
+    width: 800px !important; /* Giảm từ 950px xuống 800px */
+    height: 480px !important; /* Giảm từ 550px xuống 480px */
+    border: 15px solid #8d6e63;
+    background-color: #fff9c4;
+    position: relative;
+    z-index: 5;
+    transition: all 1s ease-in-out;
 }
 
 /* Phóng to món quà và các nhân vật phụ */
@@ -633,26 +646,19 @@ body {
 
 /* Cụm bên trái - Đẩy sát về lề trái hơn */
 .final-scene-active #friend-1 { 
-    left: 2% !important; /* Đẩy sát lề trái nhất */
-    bottom: 12% !important; 
-} 
-.final-scene-active #friend-2 { 
-    left: 22% !important; /* Giãn ra */
-    bottom: 8% !important; 
+    position: absolute !important; left: 5% !important; bottom: 15% !important; 
 }
-.final-scene-active #birthday-person-container {
-    left: 50% !important; /* Nhân vật chính ở giữa */
-    bottom: 15% !important;
+.final-scene-active #friend-2 { 
+    position: absolute !important; left: 26% !important; bottom: 10% !important; 
+}
+.final-scene-active #birthday-person-container { 
+    position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; bottom: 18% !important; 
 }
 .final-scene-active #singer-container { 
-    right: 22% !important; /* Giãn ra đối xứng friend-2 */
-    bottom: 8% !important; 
-    left: auto !important;
+    position: absolute !important; left: 72% !important; bottom: 10% !important; 
 }
 .final-scene-active #character-container { 
-    right: 2% !important; /* Đẩy sát lề phải nhất */
-    bottom: 12% !important; 
-    left: auto !important;
+    position: absolute !important; left: 90% !important; bottom: 15% !important; 
 }
 
 /* Đảm bảo hiệu ứng nhảy áp dụng cho cả Container bên phải */
