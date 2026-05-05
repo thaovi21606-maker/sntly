@@ -100,34 +100,42 @@ const stopPoint = (window.innerWidth > window.innerHeight)
 
     // --- 5. LOGIC CLICK MỞ QUÀ ---
     if (clickableGift) {
-        clickableGift.addEventListener('click', () => {
-            if (ctaText) ctaText.style.display = 'none';
-            clickableGift.classList.add('gift-fly-shake');
-            createConfetti();
+    clickableGift.addEventListener('click', () => {
+        // Kích hoạt cả 2 đoạn nhạc ngay lập tức (nhưng tắt tiếng hoặc pause ngay)
+        // Điều này giúp trình duyệt điện thoại cho phép phát nhạc về sau
+        if (audio) {
+            audio.play().then(() => { audio.pause(); audio.currentTime = 0; });
+        }
+        if (finalMusic) {
+            finalMusic.play().then(() => { finalMusic.pause(); finalMusic.currentTime = 0; });
+        }
 
+        // Các hiệu ứng cũ của bạn
+        if (ctaText) ctaText.style.display = 'none';
+        clickableGift.classList.add('gift-fly-shake');
+        createConfetti();
+
+        setTimeout(() => {
+            if (finalGift) finalGift.classList.add('show-final-gift');
+            
+            document.querySelectorAll('.char-wrapper').forEach(wrapper => {
+                wrapper.classList.add('active-jumping');
+            });
+
+            document.querySelectorAll('.speech-bubble:not(.final-bubble)').forEach(bubble => {
+                bubble.style.display = 'block';
+            });
+            
             setTimeout(() => {
-                if (finalGift) finalGift.classList.add('show-final-gift');
-                
-                document.querySelectorAll('.char-wrapper').forEach(wrapper => {
-                    wrapper.classList.add('active-jumping');
-                    const img = wrapper.querySelector('.side-character');
-                    if(img) img.classList.remove('active-jumping');
-                });
-
-                document.querySelectorAll('.speech-bubble:not(.final-bubble)').forEach(bubble => {
-                    bubble.style.display = 'block';
-                });
-                
-                setTimeout(() => {
-                    if (singerContainer) singerContainer.classList.add('singer-arrive');
-                    if (frame) frame.classList.add('shifted');
-                    if (audio) {
-                        audio.play().then(() => { startRapping(); }).catch(e => console.log("Cần tương tác"));
-                    }
-                }, 3000); 
-            }, 700);
-        });
-    }
+                if (singerContainer) singerContainer.classList.add('singer-arrive');
+                if (frame) frame.classList.add('shifted');
+                if (audio) {
+                    audio.play().then(() => { startRapping(); }).catch(e => console.log("Lỗi âm thanh"));
+                }
+            }, 3000); 
+        }, 700);
+    });
+}
 
     // --- 6. HÀM KÍCH HOẠT CẢNH KẾT THÚC ---
     function triggerFinalScene() {
