@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise Stage</title>
+    <link rel="stylesheet" href="style.css">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <div id="stage">
+        <div class="sparkle-overlay"></div>
+        
+        <div id="frame">
+            <!-- CÁC ĐOẠN KHÁC GIỮ NGUYÊN, CHỈ SỬA BÊN TRONG .content-inside -->
+<div class="content-inside">
+    <div id="confetti-container"></div>
+    
+    <!-- Nhân vật phụ 1 (Trái 1) - THÊM ID friend-1 -->
+    <div class="char-wrapper" id="friend-1">
+        <div class="speech-bubble old-bubble">Thấy sao hả cục cưng 😏</div>
+        <div class="yeah-bubble final-bubble">Yeahhhh! 🥳</div>
+        <img class="side-character" src="ban-than-1.png" alt="Bạn thân 1">
+    </div>
+    
+    <div class="gift-area">
+        <div id="cta-text" class="call-to-action">Bấm vào đi cô bé!</div>
+        <img id="clickable-gift" src="hop-qua.png" alt="Hộp quà">
+        <img id="final-gift" src="mon-qua.png" alt="Món quà thật sự">
+        <div class="final-gift-glow"></div>
+    </div>
+
+    <!-- Nhân vật phụ 2 (Trái 2) - THÊM ID friend-2 -->
+    <div class="char-wrapper" id="friend-2">
+        <div class="speech-bubble old-bubble">Em thích gì tổng tài đều cho tất 🥴</div>
+        <div class="yeah-bubble final-bubble">Yeahhhh! 🥳</div>
+        <img class="side-character right" src="ban-than-2.png" alt="Bạn thân 2">
+    </div>
+</div>
+
+            <div id="curtain-left" class="curtain"></div>
+            <div id="curtain-right" class="curtain"></div>
+            <div id="pull-string"></div>
+        </div>
+
+        <!-- Nhân vật phụ 3 (Kéo rèm - Phải 1) -->
+        <div id="character-container">
+            <div class="yeah-bubble final-bubble">Yeahhhh! 🥳</div>
+            <img id="character" src="nhan-vat.png" alt="Main Character">
+        </div>
+
+        <!-- Nhân vật chính (GIỮA) -->
+        <div id="birthday-person-container">
+            <div id="birthday-bubble" class="speech-bubble final-bubble">Ly rất cảm động với món quà của mọi người nên sẽ dẫn mọi người du lịch đến Dubai để thử trò chơi ván bay! </div>
+            <img id="birthday-person" src="nhan-vat-chinh.png" alt="Birthday Person">
+            <div id="bday-final-bubble" class="speech-bubble final-dialog-bubble">em vui quée 🥰</div>
+        </div>
+        <div id="lover-container">
+            <img id="lover" src="nguoi-yeu.png" alt="Người Yêu">
+            <div id="lover-bubble" class="speech-bubble final-dialog-bubble">sinh nhật vui vẻ nhé cục cưng 😘</div>
+        </div>
+        <div id="heart-effect">💜</div>
+    </div>
+
+    <!-- Nhân vật phụ 4 (Ca sĩ - Phải 2) -->
+    <div id="singer-container">
+        <div class="yeah-bubble final-bubble">Yeahhhh! 🥳</div>
+        <div id="microphone">🎤</div>
+        <img id="singer" src="ca-si-cam-mic.png" alt="Singer">
+        <div id="rap-bubble">
+            <div id="rap-inner">
+                <div class="rap-line">Để tôi tiếp Cô Ngân</div>
+                <div class="rap-line">Hội chị em xê ra!</div>
+                <div class="rap-line">Người chơi hệ MP5</div>
+                <div class="rap-line">đấu với hệ MP3</div>
+                <div class="rap-line">Và những kẻ anti</div>
+                <div class="rap-line">luôn ở bên chê ta</div>
+                <div class="rap-line">Ngày mai phải thốt lên</div>
+                <div class="rap-line">Oh Damn! Ghê Nha!</div>
+                <div class="rap-line">Bởi vì ta luôn nỗ lực vươn tới</div>
+                <div class="rap-line">đỉnh cao</div>
+                <div class="rap-line">Kỹ năng trau dồi</div>
+                <div class="rap-line">Tốc độ ngày càng ảo kinh!</div>
+                <div class="rap-line">Khả năng cận chiến thì</div>
+                <div class="rap-line">chẳng ai dám bảo khinh</div>
+                <div class="rap-line">Một số người còn bảo xinh</div>
+                <div class="rap-line">phải ngang Hà Thảo Linh!</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="birthday-audio" src="duong-dan-file-nhac.mp3"></audio>
+    <!-- Thêm vào ngay dưới thẻ audio cũ ở cuối file trang.html[cite: 3] -->
+<audio id="final-music" src="duong-dan-nhac-ket-thuc.mp3"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
